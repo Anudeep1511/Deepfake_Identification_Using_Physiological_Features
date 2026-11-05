@@ -1254,7 +1254,9 @@
     }
 
     function applyServerResults(data) {
-      const isReal = String(data.label || '').toUpperCase().includes('AUTHENTIC');
+      const resultLabel = String(data.label || '').toUpperCase();
+      const isFake = /\\b(FAKE|SYNTHETIC|MANIPULATED|DEEPFAKE)\\b/.test(resultLabel);
+      const isReal = !isFake && /\\b(REAL|AUTHENTIC|GENUINE)\\b/.test(resultLabel);
       const blink = data.blink_metrics || {};
       const motion = data.motion_coherence || {};
       const scores = data.modality_scores || {};
@@ -1387,7 +1389,7 @@ function drawMeasuredBvp(signal) {
         conf.textContent = data.confidence || 'Rule-based authenticity index';
       } else {
         banner.className = 'verdict-banner fake';
-        title.textContent = data.title || 'SYNTHETIC / MANIPULATED';
+        title.textContent = 'FAKE VIDEO';
         title.style.color = 'var(--accent-red)';
         conf.textContent = data.confidence || 'Rule-based synthetic risk index';
       }
